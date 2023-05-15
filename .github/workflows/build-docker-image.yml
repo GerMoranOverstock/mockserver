@@ -16,6 +16,12 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+      - name: cache setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
       - name: get tags
         id: meta
         uses: docker/metadata-action@v4
@@ -39,7 +45,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: build and push (tag override)
         if: inputs.tag != ''
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: docker/Dockerfile
@@ -48,7 +54,7 @@ jobs:
           tags:  ${{ inputs.tag }}
       - name: build and push (tag from release)
         if: inputs.tag == ''
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: docker/Dockerfile
